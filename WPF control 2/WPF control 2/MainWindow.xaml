@@ -1,0 +1,63 @@
+﻿<Window x:Class="WPF_control_2.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPF_control_2"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="420" Width="600">
+    <Grid Margin="0,0,2,0">
+        <Grid.Effect>
+            <DropShadowEffect/>
+        </Grid.Effect>
+        <ListView x:Name="listEmploees" Height="192" Margin="18,17,249,0" VerticalAlignment="Top" ItemsSource="{Binding ListBoxSourse}" SelectedItem="{Binding SelectedEmploee,Mode=TwoWay}" Background="#FF60CAF1" FontFamily="Copperplate Gothic Bold" OpacityMask="Black" >
+
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Имя"
+                                    Width="auto"
+                                    DisplayMemberBinding="{Binding Name}"/>
+                    <GridViewColumn Header="Фамилия"
+                                    Width="auto"
+                                    DisplayMemberBinding="{Binding LastName}"/>
+                    <GridViewColumn Header="Возраст"
+                                    Width="auto"
+                                    DisplayMemberBinding="{Binding Age}"/>
+
+                </GridView>
+
+            </ListView.View>
+        </ListView>
+        <Button x:Name="butDepart" Content="Создать департамент" Command="{Binding AddCommandDep}" HorizontalAlignment="Left" Margin="438,214,0,0" VerticalAlignment="Top" Width="139" FontFamily="Copperplate Gothic Bold" Background="#FFECBDBD"/>
+        <Button x:Name="butEmp" Content="Создать сотрудника" Command="{Binding AddCommand}" HorizontalAlignment="Left" Margin="18,214,0,0" VerticalAlignment="Top" Width="124" FontFamily="Copperplate Gothic Bold" Background="#FFECBDBD"/>
+        <Button x:Name="butDeleteDepart" Content="Удалить департамент" Command="{Binding RemoveCommandDep}" CommandParameter="{Binding Selecteddepart}" HorizontalAlignment="Left" Margin="438,252,0,0" VerticalAlignment="Top" Width="139" Height="20" FontFamily="Copperplate Gothic Bold" Background="#FFECBDBD"/>
+        <Button x:Name="butRemovEmpl" Content="Удалить сотрудника"  Command="{Binding RemoveCommand}" CommandParameter="{Binding SelectedEmploee}" HorizontalAlignment="Left" Margin="18,250,0,0" VerticalAlignment="Top" Width="124" FontFamily="Copperplate Gothic Bold" Background="#FFECBDBD"/>
+
+        <ComboBox x:Name="boxDepart" HorizontalAlignment="Left" Text="" Margin="346,17,0,0" VerticalAlignment="Top" Width="234" 
+                  ItemsSource="{Binding Departments}" 
+                  DisplayMemberPath="{Binding Name}" 
+                  SelectedItem="{Binding Selecteddepart}"
+                  SelectedIndex="0" Background="{x:Null}" BorderBrush="#FF60CAF1" FontFamily="Copperplate Gothic Bold">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Name}"/>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+        <StackPanel HorizontalAlignment="Left" Height="109" Margin="18,278,0,0" VerticalAlignment="Top" Width="197" DataContext="{Binding SelectedEmploee}">
+
+            <TextBlock Text="Имя" FontFamily="Copperplate Gothic Bold" />
+            <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Background="#FF60CAF1" FontFamily="Copperplate Gothic Bold" />
+            <TextBlock Text="Фамилия" FontFamily="Copperplate Gothic Bold" />
+            <TextBox Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged}" Background="#FF60CAF1" FontFamily="Copperplate Gothic Bold" />
+            <TextBlock Text="Возраст" FontFamily="Copperplate Gothic Bold" />
+            <TextBox Text="{Binding Age, UpdateSourceTrigger=PropertyChanged}" Background="#FF60CAF1" FontFamily="Copperplate Gothic Bold" />
+
+
+        </StackPanel>
+        <StackPanel HorizontalAlignment="Left" Height="39" Margin="438,302,0,0" VerticalAlignment="Top" Width="139" DataContext="{Binding Selecteddepart}">
+            <TextBlock Text="Название" FontFamily="Copperplate Gothic Bold" />
+            <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Background="#FF60CAF1" FontFamily="Copperplate Gothic Bold" />
+        </StackPanel>
+    </Grid>
+</Window>
