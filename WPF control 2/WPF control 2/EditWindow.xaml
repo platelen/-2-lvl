@@ -1,0 +1,45 @@
+﻿<Window x:Class="WPF_control_2.EditWindow"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:WPF_control_2"
+      mc:Ignorable="d"
+      Title="EditWindow" Height="226" Width="285.334" Background="#FF60CAF1" >
+
+    <Window.Resources>
+    </Window.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="4*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid x:Name="editGrid" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Label Content="Имя:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="1" VerticalAlignment="Center" FontFamily="Copperplate Gothic Bold"/>
+            <TextBox x:Name="nameTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="1" VerticalAlignment="Center" Width="120" Background="#FFECBDBD" FontFamily="Copperplate Gothic Bold"/>
+            <Label Content="Фамилия:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="2" VerticalAlignment="Center" FontFamily="Copperplate Gothic Bold"/>
+            <TextBox x:Name="lastnameTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="2"  VerticalAlignment="Center" Width="120" Background="#FFECBDBD" FontFamily="Copperplate Gothic Bold"/>
+            <Label Content="Возраст:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="3" VerticalAlignment="Center" FontFamily="Copperplate Gothic Bold"/>
+            <TextBox x:Name="ageTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="3" VerticalAlignment="Center" Width="120" Background="#FFECBDBD" FontFamily="Copperplate Gothic Bold"/>
+            <Label Content="Департамент:" Grid.Column="0" HorizontalAlignment="Left" Margin="3" Grid.Row="4" VerticalAlignment="Center" FontFamily="Copperplate Gothic Bold"/>
+            <TextBox x:Name="departTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23" Margin="3" Grid.Row="4" VerticalAlignment="Center" Width="120" Background="#FFECBDBD" FontFamily="Copperplate Gothic Bold"/>
+        </Grid>
+        <Button x:Name="saveButton" IsDefault="True" Content="Сохранить" Margin="10" Grid.Row="1" HorizontalAlignment="Center"  VerticalAlignment="Bottom" Width="75" Click="saveButton_Click" Background="#FFECBDBD" FontFamily="Copperplate Gothic Bold"/>
+        <Button x:Name="cancelButton" IsCancel="True" Content="Отменить" Margin="10" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="75" Click="cancelButton_Click" Background="#FFECBDBD" FontFamily="Copperplate Gothic Bold"/>
+    </Grid>
+</Window>

@@ -5,12 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPF_control_2"
         mc:Ignorable="d"
-        Title="MainWindow" Height="420" Width="600">
+        Title="MainWindow" Height="420" Width="910">
     <Grid Margin="0,0,2,0">
         <Grid.Effect>
             <DropShadowEffect/>
         </Grid.Effect>
-        <ListView x:Name="listEmploees" Height="192" Margin="18,17,249,0" VerticalAlignment="Top" ItemsSource="{Binding ListBoxSourse}" SelectedItem="{Binding SelectedEmploee,Mode=TwoWay}" Background="#FF60CAF1" FontFamily="Copperplate Gothic Bold" OpacityMask="Black" >
+        <ListView x:Name="listEmploees" Height="192" Margin="18,17,685,0" VerticalAlignment="Top" ItemsSource="{Binding ListBoxSourse}" SelectedItem="{Binding SelectedEmploee,Mode=TwoWay}" Background="#FF60CAF1" FontFamily="Copperplate Gothic Bold" OpacityMask="Black" >
 
             <ListView.View>
                 <GridView>
@@ -28,12 +28,12 @@
 
             </ListView.View>
         </ListView>
-        <Button x:Name="butDepart" Content="Создать департамент" Command="{Binding AddCommandDep}" HorizontalAlignment="Left" Margin="438,214,0,0" VerticalAlignment="Top" Width="139" FontFamily="Copperplate Gothic Bold" Background="#FFECBDBD"/>
+        <Button x:Name="butDepart" Content="Создать департамент" Command="{Binding AddCommandDep}" HorizontalAlignment="Left" Margin="292,217,0,0" VerticalAlignment="Top" Width="139" FontFamily="Copperplate Gothic Bold" Background="#FFECBDBD"/>
         <Button x:Name="butEmp" Content="Создать сотрудника" Command="{Binding AddCommand}" HorizontalAlignment="Left" Margin="18,214,0,0" VerticalAlignment="Top" Width="124" FontFamily="Copperplate Gothic Bold" Background="#FFECBDBD"/>
-        <Button x:Name="butDeleteDepart" Content="Удалить департамент" Command="{Binding RemoveCommandDep}" CommandParameter="{Binding Selecteddepart}" HorizontalAlignment="Left" Margin="438,252,0,0" VerticalAlignment="Top" Width="139" Height="20" FontFamily="Copperplate Gothic Bold" Background="#FFECBDBD"/>
+        <Button x:Name="butDeleteDepart" Content="Удалить департамент" Command="{Binding RemoveCommandDep}" CommandParameter="{Binding Selecteddepart}" HorizontalAlignment="Left" Margin="292,246,0,0" VerticalAlignment="Top" Width="139" Height="20" FontFamily="Copperplate Gothic Bold" Background="#FFECBDBD"/>
         <Button x:Name="butRemovEmpl" Content="Удалить сотрудника"  Command="{Binding RemoveCommand}" CommandParameter="{Binding SelectedEmploee}" HorizontalAlignment="Left" Margin="18,250,0,0" VerticalAlignment="Top" Width="124" FontFamily="Copperplate Gothic Bold" Background="#FFECBDBD"/>
 
-        <ComboBox x:Name="boxDepart" HorizontalAlignment="Left" Text="" Margin="346,17,0,0" VerticalAlignment="Top" Width="234" 
+        <ComboBox x:Name="boxDepart" HorizontalAlignment="Left" Text="" Margin="220,20,0,0" VerticalAlignment="Top" Width="234" 
                   ItemsSource="{Binding Departments}" 
                   DisplayMemberPath="{Binding Name}" 
                   SelectedItem="{Binding Selecteddepart}"
@@ -55,9 +55,23 @@
 
 
         </StackPanel>
-        <StackPanel HorizontalAlignment="Left" Height="39" Margin="438,302,0,0" VerticalAlignment="Top" Width="139" DataContext="{Binding Selecteddepart}">
+        <StackPanel HorizontalAlignment="Left" Height="39" Margin="293,277,0,0" VerticalAlignment="Top" Width="139" DataContext="{Binding Selecteddepart}">
             <TextBlock Text="Название" FontFamily="Copperplate Gothic Bold" />
             <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Background="#FF60CAF1" FontFamily="Copperplate Gothic Bold" />
         </StackPanel>
+        <DataGrid x:Name="baseDataGrid" HorizontalAlignment="Left" SelectedItem="{Binding SelectedDataRow}" Height="361" Margin="475,20,0,0" VerticalAlignment="Top" Width="322" AutoGenerateColumns="False" ItemsSource="{Binding DataTable.DefaultView}" FontFamily="Copperplate Gothic Bold" Background="#FF60CAF1">
+            <DataGrid.Columns>
+                <DataGridTextColumn x:Name="idColumn" Binding="{Binding Id}" Header="Id" IsReadOnly="True" Width="Auto"/>
+                <DataGridTextColumn x:Name="fIOColumn" Binding="{Binding Name}" Header="Имя" Width="Auto"/>
+                <DataGridTextColumn x:Name="birthdayColumn" Binding="{Binding LastName}" Header="Фамилия" Width="Auto"/>
+                <DataGridTextColumn x:Name="emailColumn" Binding="{Binding Age}" Header="Возраст" Width="Auto"/>
+                <DataGridTextColumn x:Name="phoneColumn" Binding="{Binding Department}" Header="Департамент" Width="Auto"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Button x:Name="addButton" Content="Добавить" Command="{Binding AddCommandBase}" HorizontalAlignment="Left" Margin="815,22,0,0" VerticalAlignment="Top" Width="75" Background="#FFECBDBD" FontFamily="Copperplate Gothic Bold"/>
+        <Button x:Name="updateButton" Content="Изменить" Command="{Binding UpdateCommandBase}" CommandParameter="{Binding SelectedDataRow}" HorizontalAlignment="Left" Margin="815,71,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="-0.693,-1.85" Background="#FFECBDBD" FontFamily="Copperplate Gothic Bold" />
+        <Button x:Name="deleteButton" Content="Удалить" Command="{Binding DeleteCommandBase}" HorizontalAlignment="Left" Margin="815,122,0,0" VerticalAlignment="Top" Width="75" Background="#FFECBDBD" FontFamily="Copperplate Gothic Bold"/>
+        <TextBlock HorizontalAlignment="Left" Margin="150,0,0,0" TextWrapping="Wrap" Text="Декстопное приложение" VerticalAlignment="Top" Width="162" FontFamily="Copperplate Gothic Bold"/>
+        <TextBlock HorizontalAlignment="Left" Margin="614,-1,0,0" TextWrapping="Wrap" Text="База данных" VerticalAlignment="Top" Width="98" FontFamily="Copperplate Gothic Bold"/>
     </Grid>
 </Window>

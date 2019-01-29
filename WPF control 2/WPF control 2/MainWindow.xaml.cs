@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 using System.Data.SqlClient;
+using System.Data;
 
 namespace WPF_control_2
 {
@@ -26,9 +27,10 @@ namespace WPF_control_2
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new ViewModel(10,100);
-
+            DataContext = new ViewModel(10,100,0); //1-2--Департамент и сотрудники в декстоп.
+                                                   //  3--Сотрудники в БД.
+                                                  // Колонки для БД:
+                                                 // Name,LastName,Age,Department
         }
-
     }
 }

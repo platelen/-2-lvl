@@ -8,44 +8,217 @@ using System.Runtime.CompilerServices;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
+using System.Configuration;
 
 namespace WPF_control_2
 {
+    
     class ViewModel:INotifyPropertyChanged
     {
-        //ApplicationContext db;
-        
-       
+
         static Random rnd = new Random();
+        private Department selectedDepartment;
+        private Emploee selectedEmploees;
+        private DataRowView selectedDataRow;
+        public DataTable DataTable { get; set; }
+        private  static SqlConnection connection;
+        private SqlDataAdapter da;
+        public ObservableCollection<Department> Departments { get; set; }
+        public ObservableCollection<Emploee> Emploees { get; set; }
+        public WPF_control_base_3Entities db = new WPF_control_base_3Entities(); //База данных
+        public IEnumerable<Emploee> ListBoxSourse { get; set; }
+
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName]string propertyName = "")
         {
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
-        
+
         private void LoadData()
         {
-            //var connectionString = @"Data Source=(localdb)\MSSQLLocalDB;
-            //                            Initial Catalog=WPF_control_base 3;
-            //                            Integrated Security=True;Pooling=False";
-            //SqlConnection connection = new SqlConnection(connectionString);
-            //SqlDataAdapter adapter = new SqlDataAdapter();
-            //SqlCommand command = new SqlCommand(
-            //    "SELECT ID, Name, LastName, Age FROM MyBase",
-            //    connection);
-            //adapter.SelectCommand = command;
-            //DataTable dt = new DataTable();
-            //adapter.Fill(dt);
+
             ListBoxSourse = Emploees.ToList().Where(emp => emp.Depart == Selecteddepart?.ID).ToList();
             OnPropertyChanged(nameof(ListBoxSourse));
         }
-        private Department selectedDepartment;
-        private Emploee selectedEmploees;
-        public ObservableCollection<Department> Departments { get; set; }
-        public ObservableCollection<Emploee> Emploees { get; set; }
-        public IEnumerable<Emploee> ListBoxSourse { get; set; }
 
+        public void DataGrid()
+        {
+            SqlConnection con = new SqlConnection();
+            con.ConnectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+            con.Open();
+            SqlCommand cmd = new SqlCommand();
+            cmd.CommandText = @"SELECT * FROM [MyBase]";
+            cmd.Connection = con;
+            da = new SqlDataAdapter();
+            da.SelectCommand = cmd;
+            DataTable = new DataTable("MyBase");
+            da.Fill(DataTable);
+            cmd = new SqlCommand(@"DELETE FROM [MyBase] WHERE Id=@Id", con);
+            da.DeleteCommand = cmd;
+            SqlParameter parameter = cmd.Parameters.Add("@Id", SqlDbType.Int, 0, "Id");
+            
+        }
+
+      
+
+        #region Insert
+        public void InsertRow()
+        {
+            SqlConnection connection = new SqlConnection();
+            connection.ConnectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+            connection.Open();
+            SqlCommand command =
+               new SqlCommand("SELECT Id, Name, LastName, Age, Department FROM MyBase",
+               connection);
+            da.SelectCommand = command;
+
+
+            command = new SqlCommand(@"INSERT INTO MyBase (Name, LastName, Age, Department) 
+                          VALUES (@Name, @LastName, @Age, @Department); SET @ID = @@IDENTITY;",
+                          connection);
+
+            command.Parameters.Add("@Name", SqlDbType.NVarChar, -1, "Name");
+            command.Parameters.Add("@LastName", SqlDbType.NVarChar, -1, "LastName");
+            command.Parameters.Add("@Age", SqlDbType.NVarChar, 58, "Age");
+            command.Parameters.Add("@Department", SqlDbType.NVarChar, -1, "Department");
+
+            SqlParameter param = command.Parameters.Add("@Id", SqlDbType.Int, 0, "Id");
+
+            param.Direction = ParameterDirection.Output;
+
+            da.InsertCommand = command;
+            da.Update(DataTable);
+        }
+        #endregion
+
+        #region Update
+        public void UpdateRow()
+        {
+            SqlConnection connection = new SqlConnection();
+            connection.ConnectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+            connection.Open();
+
+            SqlCommand command = new SqlCommand(@"UPDATE MyBase SET Name = @Name,
+            LastName = @LastName, Age = @Age, Department = @Department WHERE Id = @Id", connection);
+
+            command.Parameters.Add("@Name", SqlDbType.NVarChar, -1, "Name");
+            command.Parameters.Add("@LastName", SqlDbType.NVarChar, -1, "LastName");
+            command.Parameters.Add("@Age", SqlDbType.NVarChar, -1, "Age");
+            command.Parameters.Add("@Department", SqlDbType.NVarChar, -1, "Department");
+            SqlParameter  param = command.Parameters.Add("@Id", SqlDbType.Int, 0, "Id");
+
+            param.SourceVersion = DataRowVersion.Original;
+
+            da.UpdateCommand = command;
+            da.Update(DataTable);
+            
+        }
+
+        #endregion
+
+        #region Delete
+        public void DeleteBase()
+        {
+            SqlCommand command = new SqlCommand("DELETE FROM MyBase WHERE Id = @Id", connection);
+            SqlParameter param = command.Parameters.Add("@Id", SqlDbType.Int, 0, "Id");
+            param.SourceVersion = DataRowVersion.Original;
+            da.DeleteCommand = command;
+            da.Fill(DataTable);
+
+        }
+
+        #endregion
+
+        #region Для базы
+
+        public DataRowView SelectedDataRow
+        {
+            get => selectedDataRow;
+            set
+            {
+                selectedDataRow = value;
+                OnPropertyChanged();
+            }
+
+        }
+
+
+        public RelayCommand addCommandBase;
+        public RelayCommand AddCommandBase
+        {
+            get
+            {
+                return addCommandBase ??
+                    (addCommandBase = new RelayCommand(obj =>
+                    {
+                        DataRow dataRow = DataTable.NewRow();
+                        EditWindow editWindow = new EditWindow(dataRow);
+                        editWindow.ShowDialog();
+                        if(editWindow.DialogResult.Value)
+                        {
+                            DataTable.Rows.Add(editWindow.resultRow);
+                            InsertRow();
+
+                        }
+                        else
+                        {
+                            dataRow.CancelEdit();
+                        }
+                    }));
+            }
+        }
+
+
+        public RelayCommand updateCommandBase;
+        public RelayCommand UpdateCommandBase
+        {
+            get
+            {
+                return updateCommandBase ??
+                    (updateCommandBase = new RelayCommand(obj =>
+                    {
+                        DataRowView newRow = SelectedDataRow;
+                        newRow.BeginEdit();
+
+                        EditWindow editWindow = new EditWindow(newRow.Row);
+                        editWindow.ShowDialog();
+
+                        if (editWindow.DialogResult.HasValue && editWindow.DialogResult.Value)
+                        {
+                            newRow.EndEdit();
+                            UpdateRow();
+                            da.Update(DataTable);
+                            
+                        }
+                        else
+                        {
+                            newRow.CancelEdit();
+                        }
+                    }));
+            }
+        }
+
+
+        public RelayCommand deleteCommandBase;
+        public RelayCommand DeleteCommandBase
+        {
+            get
+            {
+                return deleteCommandBase ??
+                    (deleteCommandBase = new RelayCommand(obj =>
+                    {
+                        DataRowView newRow = SelectedDataRow;
+                        newRow.Row.Delete();
+                        da.Update(DataTable);
+                    }));
+            }
+        }
+
+
+        #endregion
+      
+        #region Декстопное приложение
         /// <summary>
         /// Команда на добавление объекта.
         /// </summary>
@@ -148,15 +321,18 @@ namespace WPF_control_2
             }
         }
 
-        
+
+       
 
         /// <summary>
         /// Задаём начальные данные
         /// </summary>
         /// <param name="CountDepartment">Количество департаментов</param>
         /// <param name="CountEmploee">Количество сотрудников</param>
-        public ViewModel(int CountDepartment, int CountEmploee)
+        /// <param name="Countdb">Количество сотрудников в бд</param>
+        public ViewModel(int CountDepartment, int CountEmploee,int Countdb)
         {
+            DataGrid();
             Departments = new ObservableCollection<Department>();
             for (int i = 0; i < CountDepartment; i++)
             {
@@ -166,24 +342,16 @@ namespace WPF_control_2
             Emploees = new ObservableCollection<Emploee>();
             for (int i = 0; i < CountEmploee; i++)
             {
-                var user = new Emploee
-                {
-                    Name = $"Имя_{i + 1}",
-                    LastName = $"Фамилия_{i + 1}",
-                    Age =rnd.Next(20, 50)
-                };
-                Emploees.Add(user);
-                var sql = String.Format("INSERT INTO MyBase(Name, LastName, Age) " +
-                                        $"VALUES (N'{0}', N'{1}', N'{2}')",
-                                        user.Name,
-                                        user.LastName,
-                                        user.Age);
-                //Emploees.Add(new Emploee { Name = $"Имя", LastName = "Фамилия", Age = rnd.Next(18, 40), Depart = rnd.Next(Departments.Count) });
-                //var sql = String.Format("INCERT INTO MyBase (Name,LastName,Age)" +  ($"VALUES (N'{sql.n}', N'{1}', N'{2}')");
-
+                Emploees.Add(new Emploee { Name = $"Имя", LastName = "Фамилия", Age = rnd.Next(18, 40), Depart = rnd.Next(Departments.Count) });
             }
+            //Добавление в баззу данных
 
-
+            for (int i = 0; i < Countdb; i++)
+            {
+                db.MyBase.Add(new MyBase() { Name = "Имя", LastName = "Фамилия", Age = $"{rnd.Next(20, 50)}", Department = $"{i + 1}" });
+            }
+            db.SaveChanges();
         }
+        #endregion
     }
 }
